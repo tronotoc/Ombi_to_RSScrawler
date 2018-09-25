@@ -5,7 +5,7 @@ Ombi_to_RSScrawler sendet die genehmigten Filmrequests eures Ombiservers an euer
 * [Python](https://www.python.org/downloads/)
 * [Ombi](https://ombi.io/)
 * [RSScrawler](https://github.com/rix1337/RSScrawler)
-* [Zusatzpakete]
+* Zusatzpakete: pyjq + requests. Müssen mittels pip install vorab installiert werden. 
 
 ## Nutzung
 Folgende Daten müssen in die secrets.py eingetragen werden:  
