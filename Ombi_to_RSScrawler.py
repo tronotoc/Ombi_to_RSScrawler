@@ -1,6 +1,7 @@
 """ Send Ombi Movie Requests to RSSCrawler, needs working pyjq and requests packages. Please do "pip install pyjq" and "pip install requests" """
-import secrets
 import json
+import secrets
+
 import pyjq
 import requests
 
