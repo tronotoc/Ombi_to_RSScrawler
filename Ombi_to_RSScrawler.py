@@ -5,10 +5,9 @@ import json
 import secrets
 from datetime import datetime
 import time
-
-
 import pyjq
 import requests
+f = open('OmbiCrawler.log','w')
 
 OmbiUrl=secrets.OmbiUrl  
 OmbiApi=secrets.OmbiApi  
@@ -43,8 +42,12 @@ def SendMovieToRSScrawler(movieList,RSScrawlerURL):
         if rss_request.ok == True:
             requests.delete(OmbiUrl+"/api/v1/Request/movie/"+format(i[0]), headers={'ApiKey': OmbiApi})
             (print(time.strftime("%Y-%m-%d %H:%M:%S") + " - RSScrawler hat einen Link für \033[92m" +format(i[1]) +"\033[0m gefunden!"))
+            (print(time.strftime("%Y-%m-%d %H:%M:%S") + " - RSScrawler hat einen Link für " +format(i[1]) +" gefunden!",file=f))
+
         else:
             (print(time.strftime("%Y-%m-%d %H:%M:%S") + " - RSScrawler hat keinen Link für \033[91m" +format(i[1]) +"\033[0m gefunden!"))
+            (print(time.strftime("%Y-%m-%d %H:%M:%S") + " - RSScrawler hat keinen Link für " +format(i[1]) +" gefunden!", file=f))
+
     return movieList
 
 
