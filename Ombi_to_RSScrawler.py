@@ -1,6 +1,9 @@
 """ Send Ombi Movie Requests to RSSCrawler, needs working pyjq and requests packages. Please do "pip install pyjq" and "pip install requests" """
 import json
 import secrets
+from datetime import datetime
+import time
+
 
 import pyjq
 import requests
@@ -10,14 +13,14 @@ OmbiApi=secrets.OmbiApi
 tMDbApiKey=secrets.tMDbApiKey
 RSScrawlerURL=secrets.RSScrawlerURL
 
-#fragt am Ombi-Server nach Anfragen, erhält eine Liste wobei jedes Element wie fogt aufgebaut ist (Id der Anfrage, tmdb, Genehmigung)
+#fragt am Ombi-Server nach Anfragen, erhaelt eine Liste wobei jedes Element wie fogt aufgebaut ist (Id der Anfrage, tmdb, Genehmigung)
 def GetOmbiRequests(Url,Api):
     movies=requests.get(Url+'/api/v1/Request/movie', headers={'ApiKey': Api})
     movies=movies.json()
     OmbiRequests=pyjq.all('.[] | [.id, .theMovieDbId, .approved]', movies)
     return OmbiRequests
 
-#prüft ob Anfrage genehmigt, ansonsten wird der Wunsch aus der Liste entfernt
+#prueft ob Anfrage genehmigt, ansonsten wird der Wunsch aus der Liste entfernt
 def CheckApprovalStatus(ombiList):
     ombiList=[i for i in ombiList if i[2]!=False]
     return ombiList
@@ -31,12 +34,15 @@ def GetGermanTitle(movieList,Api):
       i[1] = germanTitle.pop()
     return movieList
 
-#Sendet die deutschen Titel an die RSScrawler-Api und löscht bei Erfolg die Anfrage auf Ombi-Server
+#Sendet die deutschen Titel an die RSScrawler-Api und loescht bei Erfolg die Anfrage auf Ombi-Server
 def SendMovieToRSScrawler(movieList,RSScrawlerURL):
     for i in movieList:
         rss_request=requests.post(RSScrawlerURL+"/api/download_movie/"+format(i[1]))
         if rss_request.ok == True:
             requests.delete(OmbiUrl+"/api/v1/Request/movie/"+format(i[0]), headers={'ApiKey': OmbiApi})
+            (print(time.strftime("%Y-%m-%d %H:%M:%S") + " - RSScrawler hat einen Link für \033[92m" +format(i[1]) +"\033[0m gefunden!"))
+        else:
+            (print(time.strftime("%Y-%m-%d %H:%M:%S") + " - RSScrawler hat keinen Link für \033[91m" +format(i[1]) +"\033[0m gefunden!"))
     return movieList
 
 
